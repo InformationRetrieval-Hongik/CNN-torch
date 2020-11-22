@@ -1,2 +1,2 @@
-# MultiChannel-CNN
-MultiChannel-CNN
+# CNN - torch
+CNN
