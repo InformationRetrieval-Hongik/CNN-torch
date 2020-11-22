@@ -1,209 +1,41 @@
-import pickle as pkl
-import numpy as np
-import json
+from keras.layers import Embedding, Dense, LSTM, Flatten, Conv2D, MaxPooling2D, Reshape
+from keras.models import Sequential
+from keras.models import load_model
+from keras.callbacks import EarlyStopping, ModelCheckpoint
+from DataSet import loadDocs
 
-import pandas as pd
-import nltk
-from konlpy.tag import Okt
+# ==================================================================================================
+# ========================= generate simple test model and test data set. ==========================
+# ==================================================================================================
+train_x = loadDocs("./Data/train_x.pkl")
+train_y = loadDocs("./Data/train_y.pkl")
+test_x = loadDocs("./Data/test_x.pkl")
+test_y = loadDocs("./Data/test_y.pkl")
+lookupTable = loadDocs("./Data/lookupTable.pkl")
 
-from keras.preprocessing.sequence import pad_sequences
+model = Sequential()
+vocab_size = len(lookupTable.keys())
+embedding_dim = 100
+maxLen = train_x.shape[1]
+print(train_x.shape)
+print(vocab_size, maxLen)
 
-okt = Okt()
+model = Sequential()
+model.add(Embedding(vocab_size, embedding_dim, input_length=maxLen))
+model.add(Reshape((embedding_dim, maxLen, -1)))
 
+model.add(Conv2D(10, (3, 40), activation = 'relu'))
+model.add(MaxPooling2D(pool_size = (2, 2)))
+model.add(Flatten())
+model.add(Dense(64, activation="relu"))
+# model.add(Dense(64, activation="relu"))
+model.add(Dense(1, activation="sigmoid"))
 
-def tokenize(doc):
-    """
-    input:
-        doc: dtype=string, example) '아 더빙.. 진짜 짜증나네요 목소리'
-    return:
-        list: dtype=string, elements example) ['아/Exclamation', '더빙/Noun', '../Punctuation', '진짜/Noun', '짜증나다/Adjective', '목소리/Noun']
-    """
-    return ["/".join(token) for token in okt.pos(doc, norm=True, stem=True)]
+# earlyStop = EarlyStopping(monitor="val_loss", mode="min", verbose=1, patience=4)
+modelCheck = ModelCheckpoint("cnn_best_model.h5", monitor="val_acc", mode="max", verbose=1, save_best_only=True)
 
+model.compile(optimizer="rmsprop", loss="binary_crossentropy", metrics=["acc"])
+history = model.fit(train_x, train_y, epochs=15, callbacks=[modelCheck], batch_size=60, validation_split=0.2)
 
-def saveDocs(docs, filePath):
-    # remove duplicate samples.
-    docs.drop_duplicates(subset=["document"], inplace=True)
-
-    # remove all characters except korean and spaces.
-    docs["document"] = docs["document"].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]", "")
-
-    # exchange spaces value to null value.
-    docs["document"].replace("", np.nan, inplace=True)
-
-    # remove null samples.
-    docs = docs.dropna(how="any")
-
-    # reviewDocs has [("morpheme1/tag1", "morpheme2/tag2", ... ,), label(0 or 1)]
-    reviewDocs = [(tokenize(row[1]), row[2]) for row in docs.values]
-
-    with open(filePath, "wb") as f:
-        pkl.dump(reviewDocs, f)
-
-
-def loadDocs(filePath):
-    with open(filePath, "rb") as f:
-        reviewDocs = pkl.load(f)
-        return reviewDocs
-
-
-def frequency2index(jsonDict, topN):
-    lookupTable = dict()
-    lookupTable["<pad>"] = 0  # pad value to match the maximum length.
-    lookupTable["<oov>"] = 1  # out of value (if a word not in lookup table's keys.)
-    i = 2
-    for key in jsonDict.keys():
-        lookupTable[key] = i
-        i += 1
-
-    return lookupTable
-
-
-def saveTopNwords(dataTokens, topN, filePath):
-    text = nltk.Text(dataTokens, name="NMSC")
-
-    # get TOP N tokens with the highest frequency of output.
-    topN_words = {token[0]: token[1] for token in text.vocab().most_common(topN)}
-
-    with open(filePath, "w", encoding="utf-8") as jsonF:
-        json.dump(topN_words, jsonF, ensure_ascii=False)
-
-
-def loadTopNwords(filePath):
-    with open(filePath, "r", encoding="utf-8") as jsonF:
-        topN_words = json.load(jsonF)
-
-    return topN_words
-
-
-def saveTopNindex(topN_words, topN, filePath):
-    topN_index = frequency2index(topN_words, topN=topN)
-    with open(filePath, "w", encoding="utf-8") as jsonF:
-        json.dump(topN_index, jsonF, ensure_ascii=False)
-
-
-def loadTopNindex(filePath):
-    with open(filePath, "r", encoding="utf-8") as jsonF:
-        topN_index = json.load(jsonF)
-        return topN_index
-
-
-def encodeToInt(train_x, lookupTable, maxLen):
-    encodeIntList = []
-    keySet = lookupTable.keys()
-    for x in train_x:
-        encodeIntLine = []
-        for token in x:
-            if token in keySet:
-                encodeIntLine.append(lookupTable[token])
-            else:
-                encodeIntLine.append(lookupTable["<oov>"])
-        encodeIntList.append(encodeIntLine)
-
-    encodeIntList = np.array(encodeIntList, dtype="object")
-    padEncodeIntList = pad_sequences(encodeIntList, maxlen=maxLen, padding="pre", value=lookupTable["<pad>"])
-    return padEncodeIntList
-
-    for xIdx in range(len(train_x)):
-        for tokenIdx in range(len(train_x[xIdx])):
-            if train_x[xIdx][tokenIdx] in keySet:
-                token = lookupTable[train_x[xIdx][tokenIdx]]
-            else:
-                token = lookupTable["<oov>"]
-
-
-if __name__ == "__main__":
-    # train_df = pd.read_csv("./nsmc-master/ratings_train.txt", "\t")
-    # test_df = pd.read_csv("./nsmc-master/ratings_test.txt", "\t")
-    # data_df = pd.read_table("./nsmc-master/ratings.txt")
-
-    # saveDocs(train_df, "./trainDocs.pkl")
-    # saveDocs(test_df, "./testDocs.pkl")
-    # saveDocs(data_df, "./dataDocs.pkl")
-
-    # trainDocs = loadDocs("./trainDocs.pkl")
-    # testDocs = loadDocs("./testDocs.pkl")
-
-    # ==================================================================================================
-    # ========= process that get a Top N lookup table from comprehensive data set[ratings.txt] =========
-    # ==================================================================================================
-    if False:
-        dataDocs = loadDocs("./dataDocs.pkl")
-
-        # get all tokens from dataDocs.
-        dataTokens = [token for doc in dataDocs for token in doc[0]]
-
-        # get TOP N tokens with the highest frequency of output.
-        topN = 10000
-        saveTopNwords(dataTokens=dataTokens, topN=topN, filePath="./top_%d_words.json" % (topN))
-        topN_words = loadTopNwords("./top_%d_words.json" % (topN))
-
-        # convert frequency words dictionary to lookup table.
-        saveTopNindex(topN_words=topN_words, topN=topN, filePath="./top_%d_index.json" % (topN))
-        topN_index = loadTopNindex("./top_%d_index.json" % (topN))
-
-    # ==================================================================================================
-    # === process that encode train data[ratings_train.txt] to integer data type(lookup table index) ===
-    # ==================================================================================================
-
-    trainDocs = loadDocs("./trainDocs.pkl")
-    print("train Docs list length :", len(trainDocs))
-
-    # divide by input x and label y
-    train_x = []
-    train_y = []
-    for x, y in trainDocs:
-        train_x.append(x)
-        train_y.append(y)
-
-    maxLen = len(max(train_x, key=len))
-    lookupTable = loadTopNindex("./top_10000_index.json")
-    train_x = encodeToInt(train_x, lookupTable, maxLen)  # get numpy array that converted from morpheme to interger(lookup table index value)
-    train_y = np.array(train_y)
-
-    # ==================================================================================================
-    # ==== process that encode test data[ratings_test.txt] to integer data type(lookup table index) ====
-    # ==================================================================================================
-
-    testDocs = loadDocs("./testDocs.pkl")
-    print("test Docs list length :", len(testDocs))
-
-    # divide by input x and label y
-    test_x = []
-    test_y = []
-    for x, y in testDocs:
-        test_x.append(x)
-        test_y.append(y)
-
-    maxLen = len(max(test_x, key=len))
-    lookupTable = loadTopNindex("./top_10000_index.json")
-    test_x = encodeToInt(test_x, lookupTable, maxLen)  # get numpy array that converted from morpheme to interger(lookup table index value)
-    test_y = np.array(test_y)
-
-    # ==================================================================================================
-    # ========================= generate simple test model and test data set. ==========================
-    # ==================================================================================================
-    from keras.layers import Embedding, Dense, LSTM, Flatten
-    from keras.models import Sequential
-    from keras.models import load_model
-    from keras.callbacks import EarlyStopping, ModelCheckpoint
-
-    vocab_size = len(lookupTable.keys())
-    embedding_dim = 100
-    print(train_x.shape)
-
-    model = Sequential()
-    model.add(Embedding(vocab_size, embedding_dim, input_dim=1))
-    model.add(Flatten())
-    model.add(Dense(64, activation="relu"))
-    model.add(Dense(64, activation="relu"))
-    model.add(Dense(1, activation="sigmoid"))
-
-    earlyStop = EarlyStopping(monitor="val_loss", mode="min", verbose=1, patience=4)
-    modelCheck = ModelCheckpoint("dnn_best_model.h5", monitor="val_acc", mode="max", verbose=1, save_best_only=True)
-
-    model.compile(optimizer="rmsprop", loss="binary_crossentropy", metrics=["acc"])
-    history = model.fit(train_x, train_y, epochs=15, callbacks=[earlyStop, modelCheck], batch_size=60, validation_split=0.2)
-
-    loaded_model = load_model("dnn_best_model.h5")
-    print("\ntest accuracy : %.4f" % (loaded_model.evaluate(test_x, test_y)[1]))
+loaded_model = load_model("cnn_best_model.h5")
+print("\ntest accuracy : %.4f" % (loaded_model.evaluate(test_x, test_y)[1]))
