@@ -15,13 +15,15 @@ lookupTable = loadDocs("./Data/lookupTable.pkl")
 
 model = Sequential()
 vocab_size = len(lookupTable.keys())
-embedding_dim = 100
+embedding_dim = 128
 maxLen = train_x.shape[1]
 print(train_x.shape)
 print(vocab_size, maxLen)
 
 model = Sequential()
 model.add(Embedding(vocab_size, embedding_dim, input_length=maxLen))
+print(model.output_shape)
+# model.add(Dropout(0.3))
 model.add(Reshape((embedding_dim, maxLen, -1)))
 print(model.output_shape)
 model.add(Conv2D(50, (5, 80), activation = 'relu'))
@@ -32,11 +34,11 @@ model.add(Flatten())
 model.add(Dense(64, activation="relu"))
 model.add(Dense(1, activation="sigmoid"))
 
-# earlyStop = EarlyStopping(monitor="val_loss", mode="min", verbose=1, patience=4)
-modelCheck = ModelCheckpoint("cnn_best_model.h5", monitor="val_acc", mode="max", verbose=1, save_best_only=True)
+# # earlyStop = EarlyStopping(monitor="val_loss", mode="min", verbose=1, patience=4)
+# modelCheck = ModelCheckpoint("1D_cnn_best_model.h5", monitor="val_acc", mode="max", verbose=1, save_best_only=True)
 
-model.compile(optimizer="rmsprop", loss="binary_crossentropy", metrics=["acc"])
-history = model.fit(train_x, train_y, epochs=15, callbacks=[modelCheck], batch_size=60, validation_split=0.2)
+# model.compile(optimizer="rmsprop", loss="binary_crossentropy", metrics=["acc"])
+# history = model.fit(train_x, train_y, epochs=15, callbacks=[modelCheck], batch_size=60, validation_split=0.2)
 
-loaded_model = load_model("cnn_best_model.h5")
-print("\ntest accuracy : %.4f" % (loaded_model.evaluate(test_x, test_y)[1]))
+# loaded_model = load_model("1D_cnn_best_model.h5")
+# print("\ntest accuracy : %.4f" % (loaded_model.evaluate(test_x, test_y)[1]))
