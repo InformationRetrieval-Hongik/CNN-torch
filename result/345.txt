@@ -1,0 +1,60 @@
+================================================
+================== train info ==================
+================================================
+Top frequency words range : 10000
+Embedding Vectors dimension : 128
+Epoch Size : 20
+Batch Size : 512
+Learning Rate : 0.001
+train x shape : (145791, 80)
+train y shape : (145791,)
+test x shape : (48995, 80)
+test y shape : (48995,)
+models :
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+         Embedding-1              [-1, 80, 128]       1,280,256
+            Conv2d-2            [-1, 80, 78, 1]          30,800
+            Conv2d-3            [-1, 80, 77, 1]          41,040
+            Conv2d-4            [-1, 80, 76, 1]          51,280
+           Dropout-5                  [-1, 240]               0
+            Linear-6                    [-1, 1]             241
+           Sigmoid-7                    [-1, 1]               0
+================================================================
+Total params: 1,403,617
+Trainable params: 1,403,617
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.22
+Params size (MB): 5.35
+Estimated Total Size (MB): 5.58
+----------------------------------------------------------------
+================================================
+================= train start ==================
+================================================
+[Epoch 001/020] - time taken: 5.273 | Loss: 0.545 | Acc: 71.050 | validation Loss: 0.438 | validation Acc : 79.387
+[Epoch 002/020] - time taken: 4.626 | Loss: 0.424 | Acc: 80.064 | validation Loss: 0.392 | validation Acc : 82.194
+[Epoch 003/020] - time taken: 4.716 | Loss: 0.375 | Acc: 82.954 | validation Loss: 0.370 | validation Acc : 83.486
+[Epoch 004/020] - time taken: 4.626 | Loss: 0.343 | Acc: 84.766 | validation Loss: 0.360 | validation Acc : 84.015
+[Epoch 005/020] - time taken: 5.072 | Loss: 0.320 | Acc: 86.021 | validation Loss: 0.356 | validation Acc : 84.273
+[Epoch 006/020] - time taken: 4.634 | Loss: 0.303 | Acc: 86.861 | validation Loss: 0.354 | validation Acc : 84.462
+[Epoch 007/020] - time taken: 4.613 | Loss: 0.286 | Acc: 87.782 | validation Loss: 0.358 | validation Acc : 84.595
+[Epoch 008/020] - time taken: 4.684 | Loss: 0.273 | Acc: 88.441 | validation Loss: 0.356 | validation Acc : 84.785
+[Epoch 009/020] - time taken: 4.689 | Loss: 0.260 | Acc: 89.099 | validation Loss: 0.364 | validation Acc : 84.742
+[Epoch 010/020] - time taken: 4.617 | Loss: 0.247 | Acc: 89.700 | validation Loss: 0.369 | validation Acc : 84.813
+[Epoch 011/020] - time taken: 4.618 | Loss: 0.236 | Acc: 90.259 | validation Loss: 0.375 | validation Acc : 84.798
+[Epoch 012/020] - time taken: 4.684 | Loss: 0.225 | Acc: 90.720 | validation Loss: 0.380 | validation Acc : 84.721
+[Epoch 013/020] - time taken: 4.687 | Loss: 0.215 | Acc: 91.068 | validation Loss: 0.389 | validation Acc : 84.696
+[Epoch 014/020] - time taken: 4.606 | Loss: 0.205 | Acc: 91.525 | validation Loss: 0.400 | validation Acc : 84.813
+[Epoch 015/020] - time taken: 4.604 | Loss: 0.196 | Acc: 92.040 | validation Loss: 0.409 | validation Acc : 84.773
+[Epoch 016/020] - time taken: 4.682 | Loss: 0.187 | Acc: 92.328 | validation Loss: 0.421 | validation Acc : 84.606
+[Epoch 017/020] - time taken: 4.610 | Loss: 0.179 | Acc: 92.765 | validation Loss: 0.433 | validation Acc : 84.630
+[Epoch 018/020] - time taken: 4.690 | Loss: 0.170 | Acc: 93.181 | validation Loss: 0.449 | validation Acc : 84.715
+[Epoch 019/020] - time taken: 4.627 | Loss: 0.166 | Acc: 93.305 | validation Loss: 0.458 | validation Acc : 84.634
+[Epoch 020/020] - time taken: 4.629 | Loss: 0.159 | Acc: 93.639 | validation Loss: 0.473 | validation Acc : 84.562
+[ model test  ] - time taken: 1.181 | Loss: 0.478 | Acc: 84.207
+================================================
+========= model training is all done ===========
+================================================

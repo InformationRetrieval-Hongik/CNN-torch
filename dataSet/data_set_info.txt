@@ -1,0 +1,8 @@
+default data set shape : (data size, vocab size, vector length)
+
+    data size : 145791 for train data, and 48995 for test data.
+    vocab size : 10002 => top frequency vocab size(1000) + pad token(1) + out of value token(1)
+    vector length : train set's max data length is 78 and test set's max data length is 76. So we seted the length of the vector to 80.
+
+train data set shape : (145791, 1002, 80)
+test data set shape : (48995, 1002, 80)
