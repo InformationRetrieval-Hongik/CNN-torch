@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-from models import CNN
+from models import CNN, Double_CNN
 
 from torch.utils.data import TensorDataset, DataLoader
 
@@ -35,9 +35,8 @@ n_filters_b = 128
 filter_sizes_a = [3, 4]
 filter_sizes_b = [10, 20]
 dropout = 0.3
-
-model = CNN(vocab_size=topN + 2, embedding_dim=embedding_dim, vector_len = vector_len, n_filters_a = n_filters_a, n_filters_b = n_filters_b, filter_sizes_a = filter_sizes_a, filter_sizes_b = filter_sizes_b, dropout = dropout).to(device)
-# model = LSTM(vocab_size=topN + 2, embedding_dim=embedding_dim, vector_len=vector_len, unit_num=128)
+# model = CNN(vocab_size=topN + 2, embedding_dim=embedding_dim, vector_len = vector_len, n_filters = n_filters_a, filter_sizes = filter_sizes_a, dropout = dropout).to(device)
+model = Double_CNN(vocab_size=topN + 2, embedding_dim=embedding_dim, vector_len = vector_len, n_filters_a = n_filters_a, n_filters_b = n_filters_b, filter_sizes_a = filter_sizes_a, filter_sizes_b = filter_sizes_b, dropout = dropout).to(device)
 
 lr = 0.001
 optimizer = optim.Adam(model.parameters(), lr=lr)
