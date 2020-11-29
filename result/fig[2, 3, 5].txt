@@ -1,0 +1,58 @@
+================================================
+================== train info ==================
+================================================
+Top frequency words range : 10000
+Embedding Vectors dimension : 128
+Epoch Size : 15
+Batch Size : 512
+Filter Num : 100
+Filter Size : [2, 3, 5]
+Dropout : 0.5
+Learning Rate : 0.001
+train x shape : (145791, 80)
+train y shape : (145791,)
+test x shape : (48995, 80)
+test y shape : (48995,)
+models :
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+         Embedding-1              [-1, 80, 128]       1,280,256
+            Conv2d-2           [-1, 100, 79, 1]          25,700
+            Conv2d-3           [-1, 100, 78, 1]          38,500
+            Conv2d-4           [-1, 100, 76, 1]          64,100
+           Dropout-5                  [-1, 300]               0
+            Linear-6                    [-1, 1]             301
+           Sigmoid-7                    [-1, 1]               0
+================================================================
+Total params: 1,408,857
+Trainable params: 1,408,857
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.26
+Params size (MB): 5.37
+Estimated Total Size (MB): 5.63
+----------------------------------------------------------------
+================================================
+================= train start ==================
+================================================
+[Epoch 001/015] - time taken: 6.254 | Loss: 0.528 | Acc: 72.374 | validation Loss: 0.428 | validation Acc : 80.221
+[Epoch 002/015] - time taken: 6.017 | Loss: 0.414 | Acc: 80.750 | validation Loss: 0.383 | validation Acc : 82.618
+[Epoch 003/015] - time taken: 6.104 | Loss: 0.369 | Acc: 83.454 | validation Loss: 0.366 | validation Acc : 83.456
+[Epoch 004/015] - time taken: 5.996 | Loss: 0.339 | Acc: 85.024 | validation Loss: 0.357 | validation Acc : 84.047
+[Epoch 005/015] - time taken: 6.064 | Loss: 0.317 | Acc: 86.160 | validation Loss: 0.353 | validation Acc : 84.557
+[Epoch 006/015] - time taken: 5.868 | Loss: 0.298 | Acc: 87.224 | validation Loss: 0.352 | validation Acc : 84.569
+[Epoch 007/015] - time taken: 5.765 | Loss: 0.283 | Acc: 87.911 | validation Loss: 0.352 | validation Acc : 84.678
+[Epoch 008/015] - time taken: 5.718 | Loss: 0.269 | Acc: 88.623 | validation Loss: 0.354 | validation Acc : 84.749
+[Epoch 009/015] - time taken: 5.638 | Loss: 0.257 | Acc: 89.175 | validation Loss: 0.361 | validation Acc : 84.916
+[Epoch 010/015] - time taken: 5.433 | Loss: 0.246 | Acc: 89.752 | validation Loss: 0.365 | validation Acc : 84.777
+[Epoch 011/015] - time taken: 5.729 | Loss: 0.234 | Acc: 90.316 | validation Loss: 0.370 | validation Acc : 84.965
+[Epoch 012/015] - time taken: 6.308 | Loss: 0.223 | Acc: 90.903 | validation Loss: 0.380 | validation Acc : 84.760
+[Epoch 013/015] - time taken: 5.694 | Loss: 0.213 | Acc: 91.336 | validation Loss: 0.389 | validation Acc : 84.809
+[Epoch 014/015] - time taken: 5.432 | Loss: 0.204 | Acc: 91.853 | validation Loss: 0.397 | validation Acc : 84.590
+[Epoch 015/015] - time taken: 5.378 | Loss: 0.196 | Acc: 92.133 | validation Loss: 0.410 | validation Acc : 84.744
+[ model test  ] - time taken: 1.411 | Loss: 0.416 | Acc: 84.577
+================================================
+========= model training is all done ===========
+================================================

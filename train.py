@@ -25,15 +25,18 @@ if torch.backends.cudnn.enabled:
 # ==================================================================================================
 
 topN = 10000
-embedding_dim = 128
+embedding_dim = 100
 vector_len = 80
 
-epoch_size = 15
+epoch_size = 20
 batch_size = 512
-n_filters = 100
-filter_sizes = [3, 5]
-dropout = 0.5
-model = CNN(vocab_size=topN + 2, embedding_dim=embedding_dim, n_filters = n_filters, filter_sizes = filter_sizes, output_dim = 1, dropout = dropout).to(device)
+n_filters_a = 64
+n_filters_b = 128
+filter_sizes_a = [3, 4]
+filter_sizes_b = [10, 20]
+dropout = 0.3
+
+model = CNN(vocab_size=topN + 2, embedding_dim=embedding_dim, vector_len = vector_len, n_filters_a = n_filters_a, n_filters_b = n_filters_b, filter_sizes_a = filter_sizes_a, filter_sizes_b = filter_sizes_b, dropout = dropout).to(device)
 # model = LSTM(vocab_size=topN + 2, embedding_dim=embedding_dim, vector_len=vector_len, unit_num=128)
 
 lr = 0.001
@@ -59,8 +62,10 @@ print("Embedding Vectors dimension :", embedding_dim)
 
 print("Epoch Size :", epoch_size)
 print("Batch Size :", batch_size)
-print("Filter Num :", n_filters)
-print("Filter Size :", filter_sizes)
+print("FilterA Num :", n_filters_a)
+print("FilterB Num :", n_filters_b)
+print("FilterA Size :", filter_sizes_a)
+print("FilterB Size :", filter_sizes_b)
 print("Dropout :", dropout)
 
 print("Learning Rate :", lr)
@@ -73,7 +78,7 @@ print("test y shape :", test_y.shape)
 
 print("models :")
 # print(summary(model, torch.zeros(1, vector_len).type(torch.LongTensor).to(device), show_input=True))
-summary(model, input_size=(vector_len,), device="cuda" if device == torch.device("cuda") else "cpu")
+# summary(model, input_size=(vector_len,), device="cuda" if device == torch.device("cuda") else "cpu")
 
 # ==================================================================================================
 # ========================================== model train  ==========================================
@@ -219,5 +224,5 @@ plt.xlabel("epoch")
 plt.ylabel("accuracy")
 plt.grid()
 plt.legend(["accuracy", "validation accuracy"])
-plt.savefig('./result/fig{}.png'.format(filter_sizes), dpi=300)
+plt.savefig('./result/fig{}{}.png'.format(filter_sizes_a, filter_sizes_b), dpi=300)
 plt.show()
